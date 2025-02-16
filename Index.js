@@ -5,6 +5,9 @@ const port = 8080
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+app.get('/contact/:name', (req, res) => {
+  res.send('Hello' + " " + req.params.name)
+})
 app.get('/about', (req, res) => {
   res.send('Hello ' + req.query.name + " age " + req.query.age)
 })
