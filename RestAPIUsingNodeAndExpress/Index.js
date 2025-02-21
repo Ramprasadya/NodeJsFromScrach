@@ -46,7 +46,12 @@ app
     })
   })
   .delete((req, res) => {
-    return res.json({ status: "pending" });
+    const {id} = req.params
+     let updated =users.filter((user)=>user.id !==Number(id))
+    fs.writeFile("./MOCK_DATA.json",JSON.stringify(updated),()=>{
+
+        return res.json({ status: "Deleeted " ,id:id })
+    })
   });
 
 // Creating new user  in json file
