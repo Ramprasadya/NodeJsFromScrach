@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/user", (req, res) => {
+app.get("/user", (req,  res) => {
   const html = `
     <ul>
     ${users
