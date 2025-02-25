@@ -10,10 +10,21 @@ app.use(express.urlencoded({ extended: false }));
 // Another middleware
 app.use((req,res,next)=>{
   console.log("hello from middleware 1")
-
+  req.myName = "ram"
   // res.send({msg:"hello from middleware 1"})
 
   next()
+})
+app.use((req,res,next)=>{
+  console.log("hello from middleware 2",req.myName)
+
+  next()
+})
+
+app.use((req,res,next)=>{
+  fs.appendFile("./log.txt",`\n ${Date.now()} : ${req.method} : ${req.path}`,(err,data)=>{
+    next()
+  })
 })
 
 app.get("/", (req, res) => {
@@ -34,6 +45,7 @@ app.get("/user", (req,  res) => {
 });
 
 app.get("/users",(req,res)=>{
+  console.log("Hello from users route ", req.myName)
   res.send(users)
 })
 
