@@ -84,9 +84,12 @@ app
 // Creating new user  in json file
 app.post("/api/user", (req, res) => {
   const body = req.body;
+  if(!body.first_name || !body.last_name || !body.email || !body.job_title || !body.gender){
+    res.status(400).send({messsage:"All field are required"})
+  }
   users.push({ ...body, id: users.length + 1 });
   fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
-    return res.json({ status: "success", id: users.length });
+    return res.status(201).json({ status: "success", id: users.length });
   });
 });
 
