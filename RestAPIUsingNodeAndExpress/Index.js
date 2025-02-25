@@ -7,6 +7,15 @@ const fs = require("fs");
 // is used to parse incoming request bodies with application/x-www-form-urlencoded content type.
 app.use(express.urlencoded({ extended: false }));
 
+// Another middleware
+app.use((req,res,next)=>{
+  console.log("hello from middleware 1")
+
+  // res.send({msg:"hello from middleware 1"})
+
+  next()
+})
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 }); 
@@ -23,6 +32,10 @@ app.get("/user", (req,  res) => {
     `;
   res.send(html);
 });
+
+app.get("/users",(req,res)=>{
+  res.send(users)
+})
 
 app
   .route("/user/:id")
