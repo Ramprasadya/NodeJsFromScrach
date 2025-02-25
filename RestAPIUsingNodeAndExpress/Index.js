@@ -46,7 +46,9 @@ app.get("/user", (req,  res) => {
 
 app.get("/users",(req,res)=>{
   console.log("Hello from users route ", req.myName)
-  res.send(users)
+  res.setHeader("X-Name","Ramprasad") //Custom Headers
+  // Always add X to custom headers
+  return res.json(users)
 })
 
 app
