@@ -68,40 +68,48 @@ app.get("/user", async(req, res) => {
   res.send(html);
 });
 
-app.get("/users", (req, res) => {
+app.get("/users", async(req, res) => {
+  const allDbUser = await User.find({})
   console.log("Hello from users route ", req.myName);
-  res.setHeader("X-Name", "Ramprasad"); //Custom Headers
+  // res.setHeader("X-Name", "Ramprasad"); //Custom Headers
   // Always add X to custom headers
-  return res.json(users);
+  return res.json(allDbUser);
 });
 
 app
   .route("/user/:id")
-  .get((req, res) => {
-    const _id = Number(req.params.id);
-    const user = users.find((id) => id.id === _id);
-    res.json(user);
+  .get(async(req, res) => {
+    // const _id = Number(req.params.id);
+    // const user = users.find((id) => id.id === _id);
+    // const allDbUser = await User.findById({_id:req.params.id})
+    // second way
+    const allDbUser = await User.findById(req.params.id)
+    res.json(allDbUser);
   })
-  .patch((req, res) => {
-    const { id } = req.params;
-    const { first_name, last_name, job_title, gender, email } = req.body;
+  .patch(async(req, res) => {
+     await User.findByIdAndUpdate(req.params.id,{last_name:"changed"})
+    // const { id } = req.params;
+    // const { first_name, last_name, job_title, gender, email } = req.body;
     // const { data } = req.body;
-    let user = users.find((users) => users.id === Number(id));
-    if (first_name) user.first_name = first_name;
-    if (last_name) user.last_name = last_name;
-    if (job_title) user.job_title = job_title;
-    if (gender) user.gender = gender;
-    if (email) user.email = email;
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
-      res.json({ status: "success", id: id });
-    });
+    // let user = users.find((users) => users.id === Number(id));
+    // if (first_name) user.first_name = first_name;
+    // if (last_name) user.last_name = last_name;
+    // if (job_title) user.job_title = job_title;
+    // if (gender) user.gender = gender;
+    // if (email) user.email = email;
+    // fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
+    //   res.json({ status: "success", id: id });
+    // });
+    return  res.json({mag :"success"})
   })
-  .delete((req, res) => {
-    const { id } = req.params;
-    let updated = users.filter((user) => user.id !== Number(id));
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(updated), () => {
-      return res.json({ status: "Deleeted ", id: id });
-    });
+  .delete(async(req, res) => {
+     await User.findByIdAndDelete(req.params.id)
+    // const { id } = req.params;
+    // let updated = users.filter((user) => user.id !== Number(id));
+    // fs.writeFile("./MOCK_DATA.json", JSON.stringify(updated), () => {
+    //   return res.json({ status: "Deleeted ", id: id });
+    // });
+    return res.json({msg:"deleted "})
   });
 
 // Creating new user  in json file
