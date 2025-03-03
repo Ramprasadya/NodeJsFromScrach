@@ -10,3 +10,12 @@
  1740501307314 : POST : /api/user
  1740501315504 : POST : /api/user
  1740501322565 : POST : /api/user
+ 1740968554462 : POST : /api/user
+ 1740968827863 : POST : /api/user
+ 1740968999314 : POST : /api/user
+ 1740969227091 : POST : /api/user
+ 1740969244713 : POST : /api/user
+ 1740969246598 : POST : /api/user
+ 1740969291552 : POST : /api/user
+ 1740969477460 : GET : /user
+ 1740969477582 : GET : /favicon.ico

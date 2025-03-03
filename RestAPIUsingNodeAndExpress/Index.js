@@ -26,18 +26,17 @@ app.use((req, res, next) => {
 mongoose
   .connect("mongodb://localhost:27017/nodeTest")
   .then(() => console.log("MongoDb connection success"))
-  .then((err)=> console.log(err))
+  .catch((err)=> console.log(err))
 
 // schema
 
 const UserSchema = new mongoose.Schema({
-  id: String,
-  first_name: String,
+  first_name:{type: String,require:true},
   last_name: String,
-  email: String,
+  email:{ type:String, unique:true,require:true},
   gender: String,
   job_title: String,
-});
+},{timestamps:true});
 
 const User = mongoose.model("User", UserSchema);
 
@@ -55,10 +54,11 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/user", (req, res) => {
+app.get("/user", async(req, res) => {
+  const allDbUser = await User.find({})
   const html = `
     <ul>
-    ${users
+    ${allDbUser
       .map((item, index) => {
         return `<li>${item.first_name}</li>`;
       })
@@ -105,7 +105,7 @@ app
   });
 
 // Creating new user  in json file
-app.post("/api/user", (req, res) => {
+app.post("/api/user", async(req, res) => {
   const body = req.body;
   if (
     !body.first_name ||
@@ -116,10 +116,21 @@ app.post("/api/user", (req, res) => {
   ) {
     res.status(400).send({ messsage: "All field are required" });
   }
-  users.push({ ...body, id: users.length + 1 });
-  fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
-    return res.status(201).json({ status: "success", id: users.length });
-  });
+
+  const result = await User.create({
+    first_name:body.first_name,
+    last_name:body.last_name,
+    email:body.email,
+    job_title:body.job_title,
+    gender:body.gender
+  })
+
+  return res.status(201).json({msg:"success",result})
+
+  // users.push({ ...body, id: users.length + 1 });
+  // fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
+  //   return res.status(201).json({ status: "success", id: users.length });
+  // });
 });
 
 app.listen(port, () => {
