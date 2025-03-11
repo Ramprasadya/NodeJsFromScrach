@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../model/UserMode");
 const router = express.Router();
+const bcrypt = require('bcrypt')
 
 router.get("/", (req, res) => {
   res.send("Hello World!");
@@ -9,15 +10,43 @@ router.get("/", (req, res) => {
 router.post("/create", async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    let exist = await User.findOne({email});
+    if(exist){
+      return res.status(400).json({message:"User with this email Already exist"})
+    }
+    const salt  =  await bcrypt.genSalt(10)
+    const hashPassword = await bcrypt.hash(password,salt)
     if (!name || !email || !password) {
       return res.status(400).send("Send Correct Data ");
     }
-    const user = await User.create({ name, email, password });
+    const user =
+     await User.create({ name, email, password:hashPassword });
     res.status(201).json({ user });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+router.post("/login",async(req,res)=>{
+  try {
+    const {email,password} = req.body;
+    let user = await User.findOne({email})
+    if(!user){
+      res.status(400).json({msg:"User Does not exist"})
+    }
+    const IsMatched = await bcrypt.compare(password, user.password)
+    console.log(IsMatched);
+    
+    if(!IsMatched){
+      return res.status(400).json({msg:"Wrong Credential"})
+    }
+    res.status(200).json({msg:"Login sucess", user})
+  } catch (error) {
+    console.log(error);
+    
+  }
+})
 
 router.get("/read",async(re,res)=>{
     try {
