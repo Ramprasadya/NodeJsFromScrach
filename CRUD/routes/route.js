@@ -3,6 +3,8 @@ const User = require("../model/UserMode");
 const router = express.Router();
 const bcrypt = require('bcrypt')
 
+const JWT_SECRET = "IAMYADAVRAM$12345"
+
 router.get("/", (req, res) => {
   res.send("Hello World!");
 });
