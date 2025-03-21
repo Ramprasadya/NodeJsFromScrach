@@ -2,7 +2,7 @@ const express = require("express");
 const User = require("../model/UserMode");
 const router = express.Router();
 const bcrypt = require('bcrypt')
-
+const jwt = require("jsonwebtoken")
 const JWT_SECRET = "IAMYADAVRAM$12345"
 
 router.get("/", (req, res) => {
@@ -16,14 +16,18 @@ router.post("/create", async (req, res) => {
     if(exist){
       return res.status(400).json({message:"User with this email Already exist"})
     }
+    // Password hashing 
     const salt  =  await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(password,salt)
     if (!name || !email || !password) {
       return res.status(400).send("Send Correct Data ");
     }
+    // Creating user
     const user =
      await User.create({ name, email, password:hashPassword });
-    res.status(201).json({ user });
+    //  generating token
+    const token  =  jwt.sign({userId : user._id},JWT_SECRET)
+    res.status(201).json({ token });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -69,7 +73,7 @@ router.patch("/update/:id", async (req, res) => {
 
     const updatedUser = await User.findByIdAndUpdate(
       Id,
-      { $set: updates }
+      { $set: updates } 
     );
     if (!updatedUser) {
       return res.status(404).json({ success: false, error: "User not found" });
