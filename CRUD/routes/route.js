@@ -64,7 +64,7 @@ router.get("/read",async(re,res)=>{
 })
 
 router.patch("/update/:id", async (req, res) => {
-  try {
+  try { 
     let Id = req.params.id;
     const updates = req.body;
     if (!Id) {
