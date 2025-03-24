@@ -57,6 +57,9 @@ router.post("/login",async(req,res)=>{
 router.get("/read",async(re,res)=>{
     try {
         let data  = await User.find({})
+        if(!data){
+          return res.status(200).json({message:"No Data Found"})
+        }
         res.status(200).json({data})
     } catch (error) {
         console.log(error);
