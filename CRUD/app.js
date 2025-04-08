@@ -8,6 +8,8 @@ ConnectToMongo()
 app.use(express.json())
 app.use(router)
 
+console.log("check");
+
 
 
 app.listen(port, () => {
